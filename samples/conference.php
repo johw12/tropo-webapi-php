@@ -5,7 +5,7 @@ Conference application
 ----------------------
 This is a full-featured conference bridge, written for Tropo's WebAPI
 using the Slim Framework for PHP (http://www.slimframework.com/) and
-the Tropo WebAPI library (https://github.com/tropo/tropo-webapi-php)
+the Tropo WebAPI library (https://github.com/developergarden/tropo-webapi-php)
 
 To use, install Slim Framework according to the documentation. Adjust
 the require lines to match your locations of Slim and the Tropo classes.
