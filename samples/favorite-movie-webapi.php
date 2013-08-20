@@ -1,6 +1,6 @@
 <?php
 // This is the full code from the tutorial at
-// https://www.tropo.com/docs/webapi/php_limonade_movie_trilogy_example.htm
+// https://www.developergarden.com/fileadmin/microsites/ApiProject/Dokumente/Dokumentation/Api_Doc_5_0/telekom-tropo-2.1/html/php_limonade_movie_trilogy_example.html
 
 error_reporting(0);
 
