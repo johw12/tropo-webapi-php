@@ -1,7 +1,7 @@
 <?php
 /**
  * This file contains PHP classes that can be used to interact with the Tropo REST API/
- * @see https://www.tropo.com/docs/rest/rest_api.htm
+ * @see https://www.developergarden.com/apis/documentation/bundle/telekom-api-rest/html/index.html
  * 
  * @copyright 2010 Mark J. Headd (http://www.voiceingov.org)
  * @package TropoPHP
