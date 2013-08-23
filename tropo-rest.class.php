@@ -11,7 +11,7 @@
 class SessionAPI extends RestBase {
 	
 	// URL for the Tropo session API.
-	var $base = 'https://api.tropo.com/1.0/';
+	var $base = 'https://tropo.developergarden.com/';
 	
 	// Success response from Tropo Session API.
 	const SessionResponse = '<success>true</success>';
@@ -66,7 +66,7 @@ class SessionAPI extends RestBase {
 class EventAPI extends RestBase {
 	
 	// URL for the Tropo session API.
-	var $base = 'https://api.tropo.com/1.0/';
+	var $base = 'https://tropo.developergarden.com/';
 		
 	// Success response from Tropo Session API.
 	const EventResponse = '<signal><status>QUEUED</status></signal>';
@@ -107,8 +107,8 @@ class EventAPI extends RestBase {
 class ProvisioningAPI extends RestBase {
 	
 	// URLs for the Tropo provisioning API.
-	//const ApplicationProvisioningURLBase = 'https://api.tropo.com/v1/';
-	var $base = 'https://api.tropo.com/v1/';
+	//const ApplicationProvisioningURLBase = 'https://tropo.developergarden.com/';
+	var $base = 'https://tropo.developergarden.com/';
 		
 	public function __construct($userid, $password) {
 		parent::__construct($userid, $password);
