@@ -1,7 +1,7 @@
 Overview
 ========
 
-Tropo WebAPI PHP is a set of PHP classes for working with [Telekom Tropo's cloud communication service at Developer Garden](http://www.developergarden.com/apis/apis-sdks/telekom-tropo-api/). Tropo allows a developer to create applications that run over the phone, IM, SMS, and Twitter using web technologies. This library communicates with Tropo over JSON.
+Tropo WebAPI PHP is a set of PHP classes for working with [Telekom Tropo's cloud communication service at Developer Garden](http://www.developergarden.com/apis/apis-sdks/telekom-tropo-api/). Tropo allows a developer to create applications that run over the phone and SMS using web technologies. This library communicates with Tropo over JSON.
 
 Requirements
 ============
