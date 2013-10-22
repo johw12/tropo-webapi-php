@@ -683,7 +683,8 @@ abstract class BaseClass {
   * @return string
   */
   public function unescapeJSON($json) {
-    return str_replace(array("\\", "\"{", "}\""), array("", "{", "}"), $json);
+	  // Hack to get Umlauts working
+	  return str_replace(array("\\u00e4", "\\u00f6", "\\u00fc", "\\u00df", "\\u00c4", "\\u00d6", "\\u00dc", "\\", "\"{", "}\""), array("ä", "ö", "ü", "ß", "Ä", "Ö", "Ü", "", "{", "}"), $json);    
   }
 }
 
