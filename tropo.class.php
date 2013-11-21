@@ -255,7 +255,7 @@ class Tropo extends BaseClass {
             $params["transcription"][$option] = null;
           }
         }
-        $transcription = new Transcription($params["transcription"]["url"],$params["transcription"]["id"],$params["transcription"]["emailFormat"]);
+        $transcription = new Transcription($params["transcription"]["url"],$params["transcription"]["id"],$params["transcription"]["emailFormat"],$params["language"]);
       } else {
         $transcription = $params["transcription"];
       }
@@ -1382,7 +1382,7 @@ class Say extends BaseClass {
   */
   public function __toString() {
     if(isset($this->_event)) { $this->event = $this->_event; }
-    $this->value = str_replace('%', '%%', $this->_value);
+    $this->value = $this->_value;
     if(isset($this->_as)) { $this->as = $this->_as; }
     if(isset($this->_voice)) { $this->voice = $this->_voice; }
     if(isset($this->_allowSignals)) { $this->allowSignals = $this->_allowSignals; }
@@ -1633,6 +1633,7 @@ class Transcription extends BaseClass {
   private $_url;
   private $_id;
   private $_emailFormat;
+  private $_language;
 
   /**
   * Class constructor
@@ -1640,11 +1641,13 @@ class Transcription extends BaseClass {
   * @param string $url
   * @param string $id
   * @param string $emailFormat
+  * @param string $language
   */
-  public function __construct($url, $id=NULL, $emailFormat=NULL) {
+  public function __construct($url, $id=NULL, $emailFormat=NULL,$language=NULL) {
     $this->_url = $url;
     $this->_id = $id;
     $this->_emailFormat = $emailFormat;
+	$this->_language = $language;
   }
 
   /**
@@ -1655,6 +1658,7 @@ class Transcription extends BaseClass {
     if(isset($this->_id)) { $this->id = $this->_id; }
     if(isset($this->_url)) { $this->url = $this->_url; }
     if(isset($this->_emailFormat)) { $this->emailFormat = $this->_emailFormat; }
+	if(isset($this->_language)) { $this->language = $this->_language; }
     return $this->unescapeJSON(json_encode($this));
   }
 }
