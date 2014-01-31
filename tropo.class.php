@@ -335,14 +335,14 @@ class Tropo extends BaseClass {
   public function startRecording($startRecording) {
     if(!is_object($startRecording) && is_array($startRecording)) {
       $params = $startRecording;
-      $p = array('format', 'method', 'password', 'url', 'username', 'transcriptionID', 'transcriptionEmailFormat', 'transcriptionOutURI');
+      $p = array('format', 'method', 'password', 'url', 'username', 'transcriptionID', 'transcriptionEmailFormat', 'transcriptionOutURI', 'transcriptionLanguage');
       foreach ($p as $option) {
         $$option = null;
         if (is_array($params) && array_key_exists($option, $params)) {
           $$option = $params[$option];
         }
       }
-      $startRecording = new StartRecording($format, $method, $password, $url, $username, $transcriptionID, $transcriptionEmailFormat, $transcriptionOutURI);
+      $startRecording = new StartRecording($format, $method, $password, $url, $username, $transcriptionID, $transcriptionEmailFormat, $transcriptionOutURI, $transcriptionLanguage);
     }
     $this->startRecording = sprintf('%s', $startRecording);
   }
@@ -1574,6 +1574,7 @@ class StartRecording extends BaseClass {
   private $_transcriptionID;
   private $_transcriptionEmailFormat;
   private $_transcriptionOutURI;
+  private $_transcriptionLanguage;
 
   /**
   * Class constructor
@@ -1587,8 +1588,9 @@ class StartRecording extends BaseClass {
   * @param string $transcriptionID
   * @param string $transcriptionEmailFormat
   * @param string $transcriptionOutURI
+  * @param string $transcriptionLanguage
   */
-  public function __construct($format=NULL, $method=NULL, $password=NULL, $url=NULL, $username=NULL, $transcriptionID=NULL, $transcriptionEmailFormat=NULL, $transcriptionOutURI=NULL) {
+  public function __construct($format=NULL, $method=NULL, $password=NULL, $url=NULL, $username=NULL, $transcriptionID=NULL, $transcriptionEmailFormat=NULL, $transcriptionOutURI=NULL, $transcriptionLanguage=NULL) {
     $this->_format = $format;
     $this->_method = $method;
     $this->_password = $password;
@@ -1597,6 +1599,7 @@ class StartRecording extends BaseClass {
     $this->_transcriptionID = $transcriptionID;
     $this->_transcriptionEmailFormat = $transcriptionEmailFormat;
     $this->_transcriptionOutURI = $transcriptionOutURI;
+	$this->_transcriptionLanguage = $transcriptionLanguage;
   }
 
   /**
@@ -1612,6 +1615,7 @@ class StartRecording extends BaseClass {
     if(isset($this->_transcriptionID)) { $this->transcriptionID = $this->_transcriptionID; }
     if(isset($this->_transcriptionEmailFormat)) { $this->transcriptionEmailFormat = $this->_transcriptionEmailFormat; }
     if(isset($this->_transcriptionOutURI)) { $this->transcriptionOutURI = $this->_transcriptionOutURI; }
+    if(isset($this->_transcriptionLanguage)) { $this->transcriptionLanguage = $this->_transcriptionLanguage; }
     return $this->unescapeJSON(json_encode($this));
   }
 }
