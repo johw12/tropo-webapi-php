@@ -1,6 +1,6 @@
 <?php
 /**
- * A sample application that demonstrates the use of the TropoPHP package.
+ * A sample application that demonstrates the use of the TropoPHP packeage.
  * @copyright 2010 Mark J. Headd (http://www.voiceingov.org)
  */
 

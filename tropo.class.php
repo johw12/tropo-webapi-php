@@ -130,14 +130,14 @@ class Tropo extends BaseClass {
   */
   public function call($call, Array $params=NULL) {
     if(!is_object($call)) {
-      $p = array('to', 'from', 'network', 'channel', 'answerOnMedia', 'timeout', 'headers', 'recording', 'allowSignals');
+      $p = array('to', 'from', 'network', 'channel', 'answerOnMedia', 'timeout', 'headers', 'recording', 'allowSignals', 'machineDetection', 'voice');
       foreach ($p as $option) {
         $$option = null;
         if (is_array($params) && array_key_exists($option, $params)) {
           $$option = $params[$option];
         }
       }
-      $call = new Call($call, $from, $network, $channel, $answerOnMedia, $timeout, $headers, $recording, $allowSignals);
+      $call = new Call($call, $from, $network, $channel, $answerOnMedia, $timeout, $headers, $recording, $allowSignals, $machineDetection, $voice);
     }
     $this->call = sprintf('%s', $call);
   }
@@ -152,7 +152,7 @@ class Tropo extends BaseClass {
   */
   public function conference($conference, Array $params=NULL) {
     if(!is_object($conference)) {
-      $p = array('name', 'id', 'mute', 'on', 'playTones', 'required', 'terminator', 'allowSignals', 'interdigitTimeout');
+      $p = array('name', 'id', 'mute', 'on', 'playTones', 'required', 'terminator', 'allowSignals', 'interdigitTimeout', 'joinPrompt', 'leavePrompt', 'voice');
       foreach ($p as $option) {
         $$option = null;
         if (is_array($params) && array_key_exists($option, $params)) {
@@ -161,7 +161,7 @@ class Tropo extends BaseClass {
       }
       $id = (empty($id) && !empty($conference)) ? $conference : $id;
       $name = (empty($name)) ? (string)$id : $name;
-      $conference = new Conference($name, $id, $mute, $on, $playTones, $required, $terminator, $allowSignals, $interdigitTimeout);
+      $conference = new Conference($name, $id, $mute, $on, $playTones, $required, $terminator, $allowSignals, $interdigitTimeout, $joinPrompt, $leavePrompt, $voice);
     }
     $this->conference = sprintf('%s', $conference);
   }
@@ -217,7 +217,7 @@ class Tropo extends BaseClass {
       $next = (array_key_exists('next', $params)) ? $params["next"] : null;
       $on = new On($params["event"], $next, $say);
     }
-    $this->on = sprintf('%s', $on);
+    $this->on = array(sprintf('%s', $on));
   }
 
   /**
@@ -255,7 +255,7 @@ class Tropo extends BaseClass {
             $params["transcription"][$option] = null;
           }
         }
-        $transcription = new Transcription($params["transcription"]["url"],$params["transcription"]["id"],$params["transcription"]["emailFormat"],$params["language"]);
+        $transcription = new Transcription($params["transcription"]["url"],$params["transcription"]["id"],$params["transcription"]["emailFormat"]);
       } else {
         $transcription = $params["transcription"];
       }
@@ -372,7 +372,7 @@ class Tropo extends BaseClass {
         ? new Choices(null, null, $params["terminator"]) 
         : $choices;
       $to = isset($params["to"]) ? $params["to"] : $transfer;
-      $p = array('answerOnMedia', 'ringRepeat', 'timeout', 'from', 'allowSignals', 'headers');
+      $p = array('answerOnMedia', 'ringRepeat', 'timeout', 'from', 'allowSignals', 'headers', 'machineDetection', 'voice');
       foreach ($p as $option) {
         $$option = null;
         if (is_array($params) && array_key_exists($option, $params)) {
@@ -386,13 +386,45 @@ class Tropo extends BaseClass {
         if (is_object($params['on'])) {
           $on = $params['on'];
         } else {
-          if (strtolower($params['on']['event']) != 'ring') {
-            throw new TropoException("The only event allowed on transfer is 'ring'"); 
+          if (strtolower($params['on']['event']) == 'ring') {
+            $on = on(array('ring', null, new Say($params['on']['say']), null, null));
+          }elseif (strtolower($params['on']['event']) == 'connect') {
+
+            $comma = "";
+            $on = "";
+            
+            if(isset($params['on']['ring'])){
+              $on = new On('ring', null, new Say($params['on']['ring']), null, null);
+              $comma = ",";
+            }
+            foreach($params['on']['whisper'] as $key){
+              foreach($key as $k => $v){
+
+                switch($k){
+                  case 'ask':
+                  $on = $on . $comma . new On('connect', null, null, null,$v,null,null,"ask");
+                  break;
+                  case 'say':
+                  $on = $on . $comma . new On('connect', null, $v, null,null,null,null,"say");
+                  break;
+                  case 'wait':
+                  $on = $on . $comma . new On('connect', null, null, null,null,null,$v,"wait");
+                  break;
+                  case 'message':
+                  $on = $on . $comma . new On('connect', null, null, null,null,$v,null,"message");
+                  break;   
+                }
+                $comma = ",";
+              }
+            }
+
+          }else{
+            throw new TropoException("The only event allowed on transfer is 'ring' or 'connect'"); 
           }
-          $on = new On('ring', null, new Say($params['on']['say']));
         }
       }
-      $transfer = new Transfer($to, $answerOnMedia, $choices, $from, $ringRepeat, $timeout, $on, $allowSignals, $headers);
+      $on = $on == null ? null : sprintf('%s',$on);
+      $transfer = new Transfer($to, $answerOnMedia, $choices, $from, $ringRepeat, $timeout, $on, $allowSignals, $headers, $machineDetection, $voice);
     }
     $this->transfer = sprintf('%s', $transfer);
   }
@@ -684,7 +716,7 @@ abstract class BaseClass {
   */
   public function unescapeJSON($json) {
 	  // Hack to get Umlauts working
-	  return str_replace(array("\\u00e4", "\\u00f6", "\\u00fc", "\\u00df", "\\u00c4", "\\u00d6", "\\u00dc", "\\", "\"{", "}\""), array("ä", "ö", "ü", "ß", "Ä", "Ö", "Ü", "", "{", "}"), $json);    
+	  return str_replace(array("\\u00e4", "\\u00f6", "\\u00fc", "\\u00df", "\\u00c4", "\\u00d6", "\\u00dc", "\\", "\"{", "}\""), array("a", "o", "u", "?", "A", "O", "U", "", "{", "}"), $json);    
   }
 }
 
@@ -823,6 +855,8 @@ class Call extends BaseClass {
   private $_headers;
   private $_recording;
   private $_allowSignals;
+  private $_machineDetection;
+  private $_voice;
 
   /**
   * Class constructor
@@ -837,7 +871,7 @@ class Call extends BaseClass {
   * @param StartRecording $recording
   * @param string|array $allowSignals
   */
-  public function __construct($to, $from=NULL, $network=NULL, $channel=NULL, $answerOnMedia=NULL, $timeout=NULL, Array $headers=NULL, StartRecording $recording=NULL, $allowSignals=NULL) {
+  public function __construct($to, $from=NULL, $network=NULL, $channel=NULL, $answerOnMedia=NULL, $timeout=NULL, Array $headers=NULL, StartRecording $recording=NULL, $allowSignals=NULL, $machineDetection=NULL, $voice=NULL) {
     $this->_to = $to;
     $this->_from = $from;
     $this->_network = $network;
@@ -847,6 +881,8 @@ class Call extends BaseClass {
     $this->_headers = $headers;
     $this->_recording = isset($recording) ? sprintf('%s', $recording) : null ;
     $this->_allowSignals = $allowSignals;
+    $this->_machineDetection = $machineDetection;
+    $this->_voice = $voice;
   }
 
   /**
@@ -863,6 +899,16 @@ class Call extends BaseClass {
     if(count($this->_headers)) { $this->headers = $this->_headers; }
     if(isset($this->_recording)) { $this->recording = $this->_recording; }
     if(isset($this->_allowSignals)) { $this->allowSignals = $this->_allowSignals; }
+    if(isset($this->_machineDetection)) {
+      if(is_bool($this->_machineDetection)){
+        $this->machineDetection = $this->_machineDetection; 
+      }else{
+        $this->machineDetection->introduction = $this->_machineDetection; 
+        if(isset($this->_voice)){
+          $this->machineDetection->voice = $this->_voice; 
+        }
+      }
+    }
     return $this->unescapeJSON(json_encode($this));
   }
 }
@@ -922,6 +968,9 @@ class Conference extends BaseClass {
   private $_terminator;
   private $_allowSignals;
   private $_interdigitTimeout;
+  private $_joinPrompt;
+  private $_leavePrompt;
+  private $_voice;
 
 
   /**
@@ -937,7 +986,7 @@ class Conference extends BaseClass {
   * @param string|array $allowSignals
   * @param int $interdigitTimeout
   */
-  public function __construct($name, $id=NULL, $mute=NULL, On $on=NULL, $playTones=NULL, $required=NULL, $terminator=NULL, $allowSignals=NULL, $interdigitTimeout=NULL) {
+  public function __construct($name, $id=NULL, $mute=NULL, On $on=NULL, $playTones=NULL, $required=NULL, $terminator=NULL, $allowSignals=NULL, $interdigitTimeout=NULL, $joinPrompt=NULL, $leavePrompt=NULL, $voice=NULL) {
     $this->_name = $name;
     $this->_id = (string) $id;
     $this->_mute = $mute;
@@ -947,6 +996,9 @@ class Conference extends BaseClass {
     $this->_terminator = $terminator;
     $this->_allowSignals = $allowSignals;
     $this->_interdigitTimeout = $interdigitTimeout;
+    $this->_joinPrompt = $joinPrompt;
+    $this->_leavePrompt = $leavePrompt;
+    $this->_voice = $voice;
   }
 
   /**
@@ -963,6 +1015,18 @@ class Conference extends BaseClass {
     if(isset($this->_terminator)) { $this->terminator = $this->_terminator; }
     if(isset($this->_allowSignals)) { $this->allowSignals = $this->_allowSignals; }
     if(isset($this->_interdigitTimeout)) { $this->interdigitTimeout = $this->_interdigitTimeout; }
+    if(isset($this->_joinPrompt)) {
+       $this->joinPrompt->value = $this->_joinPrompt; 
+       if(isset($this->_voice)) { 
+         $this->joinPrompt->voice = $this->_voice; 
+       }
+    }
+    if(isset($this->_leavePrompt)) {
+       $this->leavePrompt->value = $this->_leavePrompt; 
+       if(isset($this->_voice)) { 
+         $this->leavePrompt->voice = $this->_voice; 
+       }
+    }
     return $this->unescapeJSON(json_encode($this));
   }
 }
@@ -1045,6 +1109,10 @@ class On extends BaseClass {
   private $_next;
   private $_say;
   private $_voice;
+  private $_ask;
+  private $_message;
+  private $_wait;
+  private $_order;
 
   /**
   * Class constructor
@@ -1054,11 +1122,15 @@ class On extends BaseClass {
   * @param Say $say
   * @param string $voice
   */
-  public function __construct($event=NULL, $next=NULL, Say $say=NULL, $voice=Null) {
+  public function __construct($event=NULL, $next=NULL, Say $say=NULL, $voice=Null, $ask=NULL, Message $message=NULL, Wait $wait=NULL, $order=NULL) {
     $this->_event = $event;
     $this->_next = $next;
     $this->_say = isset($say) ? sprintf('%s', $say) : null ;
     $this->_voice = $voice;
+    $this->_ask = isset($ask) ? sprintf('%s', $ask) : null;
+    $this->_message = isset($message) ? sprintf('%s', $message) : null;
+    $this->_wait = isset($wait) ? sprintf('%s', $wait) : null;
+    $this->_order = $order;
   }
 
   /**
@@ -1066,11 +1138,31 @@ class On extends BaseClass {
   *
   */
   public function __toString() {
-    if(isset($this->_event)) { $this->event = $this->_event; }
-    if(isset($this->_next)) { $this->next = $this->_next; }
-    if(isset($this->_say)) { $this->say = $this->_say; }
-    if(isset($this->_voice)) { $this->voice = $this->_voice; }
-    return $this->unescapeJSON(json_encode($this));
+    
+    if($this->_event == "connect") {  
+      $this->event =  $this->_event;        
+      switch($this->_order){
+        case 'ask':
+        $this->ask = $this->_ask;
+        break;
+        case  'say':
+        $this->say = $this->_say;
+        break;
+        case 'wait':
+        $this->ask = $this->_ask;  
+        break;
+        case 'message':
+        $this->message = $this->_message;
+        break;
+      }          
+      return $this->unescapeJSON(json_encode(($this)));
+    }else{
+      if(isset($this->_event)) { $this->event = $this->_event; }
+      if(isset($this->_next)) { $this->next = $this->_next; }
+      if(isset($this->_say)) { $this->say = $this->_say; }
+      if(isset($this->_voice)) { $this->voice = $this->_voice; }
+      return $this->unescapeJSON(json_encode($this));
+    }
   }
 }
 
@@ -1234,6 +1326,7 @@ class Result {
   private $_confidence;
   private $_interpretation;
   private $_concept;
+  private $_userType;
   private $_utterance;
   private $_value;
   private $_transcription;
@@ -1263,6 +1356,7 @@ class Result {
     $this->_sequence = $result->result->sequence;
     $this->_complete = $result->result->complete;
     $this->_error = $result->result->error;
+    $this->_userType = $result->result->userType;
     $this->_actions = $result->result->actions;
     $this->_name = $result->result->actions->name;
     $this->_attempts = $result->result->actions->attempts;
@@ -1303,6 +1397,10 @@ class Result {
     return $this->_error;
   }
 
+  public function getUserType() {
+    return $this->_userType;
+  }
+  
   public function getActions() {
     return $this->_actions;
   }
@@ -1403,7 +1501,6 @@ class Session {
   private $_accountId;
   private $_callId;
   private $_timestamp;
-  private $_userType;
   private $_initialText;
   private $_to;
   private $_from;
@@ -1432,7 +1529,6 @@ class Session {
     $this->_accountId = $session->session->accountId;
     $this->_callId = $session->session->callId;
     $this->_timestamp = $session->session->timestamp;
-    $this->_userType = $session->session->userType;
     $this->_initialText = $session->session->initialText;
     $this->_to = isset($session->session->to)
     ? array(
@@ -1481,9 +1577,6 @@ class Session {
 
           public function getTimeStamp() {
             return $this->_timestamp;
-          }
-          public function getUserType() {
-            return $this->_userType;
           }
 
           public function getInitialText() {
@@ -1633,7 +1726,6 @@ class Transcription extends BaseClass {
   private $_url;
   private $_id;
   private $_emailFormat;
-  private $_language;
 
   /**
   * Class constructor
@@ -1641,13 +1733,11 @@ class Transcription extends BaseClass {
   * @param string $url
   * @param string $id
   * @param string $emailFormat
-  * @param string $language
   */
-  public function __construct($url, $id=NULL, $emailFormat=NULL,$language=NULL) {
+  public function __construct($url, $id=NULL, $emailFormat=NULL) {
     $this->_url = $url;
     $this->_id = $id;
     $this->_emailFormat = $emailFormat;
-	$this->_language = $language;
   }
 
   /**
@@ -1658,7 +1748,6 @@ class Transcription extends BaseClass {
     if(isset($this->_id)) { $this->id = $this->_id; }
     if(isset($this->_url)) { $this->url = $this->_url; }
     if(isset($this->_emailFormat)) { $this->emailFormat = $this->_emailFormat; }
-	if(isset($this->_language)) { $this->language = $this->_language; }
     return $this->unescapeJSON(json_encode($this));
   }
 }
@@ -1679,6 +1768,8 @@ class Transfer extends BaseClass {
   private $_to;
   private $_allowSignals;
   private $_headers;
+  private $_machineDetection;
+  private $_voice;
 
   /**
   * Class constructor
@@ -1693,16 +1784,18 @@ class Transfer extends BaseClass {
   * @param string|array $allowSignals
   * @param array $headers
   */
-  public function __construct($to, $answerOnMedia=NULL, Choices $choices=NULL, $from=NULL, $ringRepeat=NULL, $timeout=NULL, $on=NULL, $allowSignals=NULL, Array $headers=NULL) {
+  public function __construct($to, $answerOnMedia=NULL, Choices $choices=NULL, $from=NULL, $ringRepeat=NULL, $timeout=NULL, $on=NULL, $allowSignals=NULL, Array $headers=NULL, $machineDetection=NULL, $voice=NULL) {
     $this->_to = $to;
     $this->_answerOnMedia = $answerOnMedia;
     $this->_choices = isset($choices) ? sprintf('%s', $choices) : null;
     $this->_from = $from;
     $this->_ringRepeat = $ringRepeat;
     $this->_timeout = $timeout;
-    $this->_on = isset($on) ? sprintf('%s', $on) : null;
+    $this->_on = isset($on) ? array(sprintf('%s', $on)) : null;
     $this->_allowSignals = $allowSignals;
     $this->_headers = $headers;
+    $this->_machineDetection = $machineDetection;
+    $this->_voice = $voice;
   }
 
   /**
@@ -1719,6 +1812,16 @@ class Transfer extends BaseClass {
     if(isset($this->_on)) { $this->on = $this->_on; }
     if(isset($this->_allowSignals)) { $this->allowSignals = $this->_allowSignals; }
     if(count($this->_headers)) { $this->headers = $this->_headers; }
+    if(isset($this->_machineDetection)) {
+      if(is_bool($this->_machineDetection)){
+        $this->machineDetection = $this->_machineDetection; 
+      }else{
+        $this->machineDetection->introduction = $this->_machineDetection; 
+        if(isset($this->_voice)){
+          $this->machineDetection->voice = $this->_voice; 
+        }
+      }
+    }
     return $this->unescapeJSON(json_encode($this));
   }
 }
