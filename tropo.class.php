@@ -248,14 +248,14 @@ class Tropo extends BaseClass {
       }
       $say = new Say($params["say"], $params["as"], null, null);
       if (is_array($params['transcription'])) {
-        $p = array('url', 'id', 'emailFormat');
+        $p = array('url', 'id', 'emailFormat','language');
         foreach ($p as $option) {
           $$option = null;
           if (!is_array($params["transcription"]) || !array_key_exists($option, $params["transcription"])) {
             $params["transcription"][$option] = null;
           }
         }
-        $transcription = new Transcription($params["transcription"]["url"],$params["transcription"]["id"],$params["transcription"]["emailFormat"],$params["language"]);
+        $transcription = new Transcription($params["transcription"]["url"],$params["transcription"]["id"],$params["transcription"]["emailFormat"],$params["transcription"]["language"]);
       } else {
         $transcription = $params["transcription"];
       }
