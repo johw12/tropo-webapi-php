@@ -206,7 +206,7 @@ class Tropo extends BaseClass {
   * @see https://www.developergarden.com/fileadmin/microsites/ApiProject/Dokumente/Dokumentation/Api_Doc_5_0/telekom-tropo-2.1/html/on.html
   */
   public function on($on) {
-    if (!is_object($on) && is_array($on))	{
+    if (!is_object($on) && is_array($on))       {
       $params = $on;
       if ((array_key_exists('say', $params) && ((array_key_exists('voice', $params) || isset($this->_voice))))){
         $v = isset($params["voice"]) ? $params["voice"] : $this->_voice;
@@ -238,24 +238,24 @@ class Tropo extends BaseClass {
         $params[$option] = array_key_exists($option, $params) ? $params[$option] : null;
       }
       $choices = isset($params["choices"])
-        ? new Choices(null, null, $params["choices"]) 
+        ? new Choices(null, null, $params["choices"])
         : null;
       $choices = isset($params["terminator"])
-        ? new Choices(null, null, $params["terminator"]) 
+        ? new Choices(null, null, $params["terminator"])
         : $choices;
       if (!isset($params['voice'])) {
         $params['voice'] = $this->_voice;
       }
       $say = new Say($params["say"], $params["as"], null, null);
       if (is_array($params['transcription'])) {
-        $p = array('url', 'id', 'emailFormat');
+        $p = array('url', 'id', 'emailFormat', 'language');
         foreach ($p as $option) {
           $$option = null;
           if (!is_array($params["transcription"]) || !array_key_exists($option, $params["transcription"])) {
             $params["transcription"][$option] = null;
           }
         }
-        $transcription = new Transcription($params["transcription"]["url"],$params["transcription"]["id"],$params["transcription"]["emailFormat"]);
+        $transcription = new Transcription($params["transcription"]["url"],$params["transcription"]["id"],$params["transcription"]["emailFormat"],$params["transcription"]["language"]);
       } else {
         $transcription = $params["transcription"];
       }
@@ -369,7 +369,7 @@ class Tropo extends BaseClass {
     if(!is_object($transfer)) {
       $choices = isset($params["choices"]) ? $params["choices"] : null;
       $choices = isset($params["terminator"])
-        ? new Choices(null, null, $params["terminator"]) 
+        ? new Choices(null, null, $params["terminator"])
         : $choices;
       $to = isset($params["to"]) ? $params["to"] : $transfer;
       $p = array('answerOnMedia', 'ringRepeat', 'timeout', 'from', 'allowSignals', 'headers', 'machineDetection', 'voice');
@@ -392,7 +392,7 @@ class Tropo extends BaseClass {
 
             $comma = "";
             $on = "";
-            
+
             if(isset($params['on']['ring'])){
               $on = new On('ring', null, new Say($params['on']['ring']), null, null);
               $comma = ",";
@@ -412,14 +412,14 @@ class Tropo extends BaseClass {
                   break;
                   case 'message':
                   $on = $on . $comma . new On('connect', null, null, null,null,$v,null,"message");
-                  break;   
+                  break;
                 }
                 $comma = ",";
               }
             }
 
           }else{
-            throw new TropoException("The only event allowed on transfer is 'ring' or 'connect'"); 
+            throw new TropoException("The only event allowed on transfer is 'ring' or 'connect'");
           }
         }
       }
@@ -428,13 +428,13 @@ class Tropo extends BaseClass {
     }
     $this->transfer = sprintf('%s', $transfer);
   }
-  
+
   /**
   * Makes the Tropo sleep an active call in milliseconds
   *
   * @param Interger $milliseconds
   * @param String or Array $allowSignals
-  * @see 
+  * @see
   */
   public function wait($wait) {
      if (!is_object($wait) && is_array($wait)){
@@ -443,7 +443,7 @@ class Tropo extends BaseClass {
         $wait = new Wait($params["milliseconds"], $signal);
     }
     $this->wait = sprintf('%s', $wait);
-    
+
   }
 
   /**
@@ -715,8 +715,8 @@ abstract class BaseClass {
   * @return string
   */
   public function unescapeJSON($json) {
-	  // Hack to get Umlauts working
-	  return str_replace(array("\\u00e4", "\\u00f6", "\\u00fc", "\\u00df", "\\u00c4", "\\u00d6", "\\u00dc", "\\", "\"{", "}\""), array("a", "o", "u", "?", "A", "O", "U", "", "{", "}"), $json);    
+          // Hack to get Umlauts working
+          return str_replace(array("\\u00e4", "\\u00f6", "\\u00fc", "\\u00df", "\\u00c4", "\\u00d6", "\\u00dc", "\\", "\"{", "}\""), array("a", "o", "u", "?", "A", "O", "U", "", "{", "}"), $json);
   }
 }
 
@@ -776,7 +776,7 @@ class Ask extends BaseClass {
   * @param string $voice
   * @param string|array $allowSignals
   * @param integer $interdigitTimeout
-  * @param integer $sensitivity 
+  * @param integer $sensitivity
   * @param float $speechCompleteTimeout
   * @param float $speechIncompleteTimeout
   */
@@ -901,11 +901,11 @@ class Call extends BaseClass {
     if(isset($this->_allowSignals)) { $this->allowSignals = $this->_allowSignals; }
     if(isset($this->_machineDetection)) {
       if(is_bool($this->_machineDetection)){
-        $this->machineDetection = $this->_machineDetection; 
+        $this->machineDetection = $this->_machineDetection;
       }else{
-        $this->machineDetection->introduction = $this->_machineDetection; 
+        $this->machineDetection->introduction = $this->_machineDetection;
         if(isset($this->_voice)){
-          $this->machineDetection->voice = $this->_voice; 
+          $this->machineDetection->voice = $this->_voice;
         }
       }
     }
@@ -1016,15 +1016,15 @@ class Conference extends BaseClass {
     if(isset($this->_allowSignals)) { $this->allowSignals = $this->_allowSignals; }
     if(isset($this->_interdigitTimeout)) { $this->interdigitTimeout = $this->_interdigitTimeout; }
     if(isset($this->_joinPrompt)) {
-       $this->joinPrompt->value = $this->_joinPrompt; 
-       if(isset($this->_voice)) { 
-         $this->joinPrompt->voice = $this->_voice; 
+       $this->joinPrompt->value = $this->_joinPrompt;
+       if(isset($this->_voice)) {
+         $this->joinPrompt->voice = $this->_voice;
        }
     }
     if(isset($this->_leavePrompt)) {
-       $this->leavePrompt->value = $this->_leavePrompt; 
-       if(isset($this->_voice)) { 
-         $this->leavePrompt->voice = $this->_voice; 
+       $this->leavePrompt->value = $this->_leavePrompt;
+       if(isset($this->_voice)) {
+         $this->leavePrompt->voice = $this->_voice;
        }
     }
     return $this->unescapeJSON(json_encode($this));
@@ -1138,9 +1138,9 @@ class On extends BaseClass {
   *
   */
   public function __toString() {
-    
-    if($this->_event == "connect") {  
-      $this->event =  $this->_event;        
+
+    if($this->_event == "connect") {
+      $this->event =  $this->_event;
       switch($this->_order){
         case 'ask':
         $this->ask = $this->_ask;
@@ -1149,12 +1149,12 @@ class On extends BaseClass {
         $this->say = $this->_say;
         break;
         case 'wait':
-        $this->ask = $this->_ask;  
+        $this->ask = $this->_ask;
         break;
         case 'message':
         $this->message = $this->_message;
         break;
-      }          
+      }
       return $this->unescapeJSON(json_encode(($this)));
     }else{
       if(isset($this->_event)) { $this->event = $this->_event; }
@@ -1400,7 +1400,7 @@ class Result {
   public function getUserType() {
     return $this->_userType;
   }
-  
+
   public function getActions() {
     return $this->_actions;
   }
@@ -1532,7 +1532,7 @@ class Session {
     $this->_initialText = $session->session->initialText;
     $this->_to = isset($session->session->to)
     ? array(
-      "id" => $session->session->to->id,	
+      "id" => $session->session->to->id,
       "channel" => $session->session->to->channel,
       "name" => $session->session->to->name,
       "network" => $session->session->to->network
@@ -1726,6 +1726,7 @@ class Transcription extends BaseClass {
   private $_url;
   private $_id;
   private $_emailFormat;
+  private $_language;
 
   /**
   * Class constructor
@@ -1733,11 +1734,13 @@ class Transcription extends BaseClass {
   * @param string $url
   * @param string $id
   * @param string $emailFormat
+  * @param string $language
   */
-  public function __construct($url, $id=NULL, $emailFormat=NULL) {
+  public function __construct($url, $id=NULL, $emailFormat=NULL, $language=NULL) {
     $this->_url = $url;
     $this->_id = $id;
     $this->_emailFormat = $emailFormat;
+    $this->_language = $language;
   }
 
   /**
@@ -1748,6 +1751,7 @@ class Transcription extends BaseClass {
     if(isset($this->_id)) { $this->id = $this->_id; }
     if(isset($this->_url)) { $this->url = $this->_url; }
     if(isset($this->_emailFormat)) { $this->emailFormat = $this->_emailFormat; }
+    if(isset($this->_language)) { $this->language = $this->_language; }
     return $this->unescapeJSON(json_encode($this));
   }
 }
@@ -1814,11 +1818,11 @@ class Transfer extends BaseClass {
     if(count($this->_headers)) { $this->headers = $this->_headers; }
     if(isset($this->_machineDetection)) {
       if(is_bool($this->_machineDetection)){
-        $this->machineDetection = $this->_machineDetection; 
+        $this->machineDetection = $this->_machineDetection;
       }else{
-        $this->machineDetection->introduction = $this->_machineDetection; 
+        $this->machineDetection->introduction = $this->_machineDetection;
         if(isset($this->_voice)){
-          $this->machineDetection->voice = $this->_voice; 
+          $this->machineDetection->voice = $this->_voice;
         }
       }
     }
@@ -1852,7 +1856,7 @@ class Wait extends BaseClass {
   *
   */
   public function __toString() {
-    $this->milliseconds = $this->_milliseconds; 
+    $this->milliseconds = $this->_milliseconds;
     if(isset($this->_allowSignals)) { $this->allowSignals = $this->_allowSignals; }
     return $this->unescapeJSON(json_encode($this));
   }
