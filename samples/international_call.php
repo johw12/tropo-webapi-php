@@ -8,8 +8,8 @@ require_once 'tropo.class.php';
 	'beep' => true,
 	'maxTime' => 900,
 	
-	'recordURI' => "http://www.thapps.net/recordings/record.php", // or replace with getself() . '?record'
-	'transcriptionOutURI' => "http://www.thapps.net/transcriptions/transcribe.php",
+	'recordURI' => "http://www.your-server-url.net/recordings/record.php", // or replace with getself() . '?record'
+	'transcriptionOutURI' => "http://www.your-server-url.net/transcriptions/transcribe.php",
 	// The two lines above might be filled with invalid URLs
 	
 	// ****************************************************************

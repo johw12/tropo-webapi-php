@@ -10,7 +10,7 @@ function app_start() {
 
   $tropo->call("+14071234321", array(
     "machineDetection" => "This is just a test to see if you are a human or a machine. PLease hold while we determine. Almost finished. Thank you!", 
-    "voice" => "Victor"
+    "voice" => "Kate"
   ));
   $tropo->on(array("event" => "continue", "next" => "your_app.php?uri=continue"));
   

@@ -16,8 +16,8 @@ $tropo->conference(null, array(
   "id"=>"1234",
   "name"=>"joinleave",
   "joinPrompt" => "$callerID has entered the conference",
-  "leavePrompt" => "$callerID has left the conference", 
-  "voice" => "Victor",
+  "leavePrompt" => "$callerID has left the conference",
+  "voice" => "Kate"
 ));
 
 $tropo->RenderJson();
