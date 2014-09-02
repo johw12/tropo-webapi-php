@@ -6,7 +6,7 @@ Tropo WebAPI PHP is a set of PHP classes for working with [Telekom Tropo's cloud
 Requirements
 ============
 
- * PHP 5.3.0 or greater (5.4 not yet supported)
+ * PHP 5.3.0 or greater
  * PHP Notices disabled (All error reporting disabled is recommended for production use)
 
 Usage
