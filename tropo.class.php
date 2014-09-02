@@ -1,7 +1,7 @@
 <?php
 /**
 * This file contains PHP classes that can be used to interact with the Tropo WebAPI/
-* @see https://www.developergarden.com/fileadmin/microsites/ApiProject/Dokumente/Dokumentation/Api_Doc_5_0/telekom-tropo-2.1/html/webapi.html
+* @see https://www.developergarden.com/apis/documentation/api/telekom-tropo-documentation/html/webapi.html
 *
 * @copyright 2010 Mark J. Headd (http://www.voiceingov.org)
 * @package TropoPHP
@@ -91,7 +91,7 @@ class Tropo extends BaseClass {
   *
   * @param string|Ask $ask
   * @param array $params
-  * @see https://www.developergarden.com/fileadmin/microsites/ApiProject/Dokumente/Dokumentation/Api_Doc_5_0/telekom-tropo-2.1/html/ask.html
+  * @see https://www.developergarden.com/apis/documentation/api/telekom-tropo-documentation/html/ask.html
   */
   public function ask($ask, Array $params=NULL) {
     if(!is_object($ask)) {
@@ -126,7 +126,7 @@ class Tropo extends BaseClass {
   *
   * @param string|Call $call
   * @param array $params
-  * @see https://www.developergarden.com/fileadmin/microsites/ApiProject/Dokumente/Dokumentation/Api_Doc_5_0/telekom-tropo-2.1/html/call.html
+  * @see https://www.developergarden.com/apis/documentation/api/telekom-tropo-documentation/html/call.html
   */
   public function call($call, Array $params=NULL) {
     if(!is_object($call)) {
@@ -148,7 +148,7 @@ class Tropo extends BaseClass {
   *
   * @param string|Conference $conference
   * @param array $params
-  * @see https://www.developergarden.com/fileadmin/microsites/ApiProject/Dokumente/Dokumentation/Api_Doc_5_0/telekom-tropo-2.1/html/conference.html
+  * @see https://www.developergarden.com/apis/documentation/api/telekom-tropo-documentation/html/conference.html
   */
   public function conference($conference, Array $params=NULL) {
     if(!is_object($conference)) {
@@ -168,7 +168,7 @@ class Tropo extends BaseClass {
 
   /**
   * This function instructs Tropo to "hang-up" or disconnect the session associated with the current session.
-  * @see https://www.developergarden.com/fileadmin/microsites/ApiProject/Dokumente/Dokumentation/Api_Doc_5_0/telekom-tropo-2.1/html/hangup.html
+  * @see https://www.developergarden.com/apis/documentation/api/telekom-tropo-documentation/html/hangup.html
   */
   public function hangup() {
     $hangup = new Hangup();
@@ -180,7 +180,7 @@ class Tropo extends BaseClass {
   *
   * @param string|Message $message
   * @param array $params
-  * @see https://www.developergarden.com/fileadmin/microsites/ApiProject/Dokumente/Dokumentation/Api_Doc_5_0/telekom-tropo-2.1/html/message.html
+  * @see https://www.developergarden.com/apis/documentation/api/telekom-tropo-documentation/html/message.html
   */
   public function message($message, Array $params=null) {
     if(!is_object($message)) {
@@ -203,7 +203,7 @@ class Tropo extends BaseClass {
   * Possible events are: "continue", "error", "incomplete" and "hangup".
   *
   * @param array $params
-  * @see https://www.developergarden.com/fileadmin/microsites/ApiProject/Dokumente/Dokumentation/Api_Doc_5_0/telekom-tropo-2.1/html/on.html
+  * @see https://www.developergarden.com/apis/documentation/api/telekom-tropo-documentation/html/on.html
   */
   public function on($on) {
     if (!is_object($on) && is_array($on))	{
@@ -228,7 +228,7 @@ class Tropo extends BaseClass {
   * If specified, the audio file may also be transcribed and the text returned to you via an email address or HTTP POST/Multipart Form.
   *
   * @param array|Record $record
-  * @see https://www.developergarden.com/fileadmin/microsites/ApiProject/Dokumente/Dokumentation/Api_Doc_5_0/telekom-tropo-2.1/html/record.html
+  * @see https://www.developergarden.com/apis/documentation/api/telekom-tropo-documentation/html/record.html
   */
   public function record($record) {
     if(!is_object($record) && is_array($record)) {
@@ -278,7 +278,7 @@ class Tropo extends BaseClass {
   *
   * @param string|Redirect $redirect
   * @param array $params
-  * @see https://www.developergarden.com/fileadmin/microsites/ApiProject/Dokumente/Dokumentation/Api_Doc_5_0/telekom-tropo-2.1/html/redirect.html
+  * @see https://www.developergarden.com/apis/documentation/api/telekom-tropo-documentation/html/redirect.html
   */
   public function redirect($redirect, Array $params=NULL) {
     if(!is_object($redirect)) {
@@ -293,7 +293,7 @@ class Tropo extends BaseClass {
   * Allows Tropo applications to reject incoming sessions before they are answered.
   * For example, an application could inspect the callerID variable to determine if the user is known, and then use the reject call accordingly.
   *
-  * @see https://www.developergarden.com/fileadmin/microsites/ApiProject/Dokumente/Dokumentation/Api_Doc_5_0/telekom-tropo-2.1/html/reject.html
+  * @see https://www.developergarden.com/apis/documentation/api/telekom-tropo-documentation/html/reject.html
   *
   */
   public function reject() {
@@ -307,7 +307,7 @@ class Tropo extends BaseClass {
   *
   * @param string|Say $say
   * @param array $params
-  * @see https://www.developergarden.com/fileadmin/microsites/ApiProject/Dokumente/Dokumentation/Api_Doc_5_0/telekom-tropo-2.1/html/say.html
+  * @see https://www.developergarden.com/apis/documentation/api/telekom-tropo-documentation/html/say.html
   */
   public function say($say, Array $params=NULL) {
     if(!is_object($say)) {
@@ -330,7 +330,7 @@ class Tropo extends BaseClass {
   * The resulting recording may then be sent via FTP or an HTTP POST/Multipart Form.
   *
   * @param array|StartRecording $startRecording
-  * @see https://www.developergarden.com/fileadmin/microsites/ApiProject/Dokumente/Dokumentation/Api_Doc_5_0/telekom-tropo-2.1/html/startrecording.html
+  * @see https://www.developergarden.com/apis/documentation/api/telekom-tropo-documentation/html/startrecording.html
   */
   public function startRecording($startRecording) {
     if(!is_object($startRecording) && is_array($startRecording)) {
@@ -350,7 +350,7 @@ class Tropo extends BaseClass {
   /**
   * Stops a previously started recording.
   *
-  * @see https://www.developergarden.com/fileadmin/microsites/ApiProject/Dokumente/Dokumentation/Api_Doc_5_0/telekom-tropo-2.1/html/stoprecording.html
+  * @see https://www.developergarden.com/apis/documentation/api/telekom-tropo-documentation/html/stoprecording.html
   */
   public function stopRecording() {
     $stopRecording = new stopRecording();
@@ -363,7 +363,7 @@ class Tropo extends BaseClass {
   *
   * @param string|Transfer $transfer
   * @param array $params
-  * @see https://www.developergarden.com/fileadmin/microsites/ApiProject/Dokumente/Dokumentation/Api_Doc_5_0/telekom-tropo-2.1/html/transfer.html
+  * @see https://www.developergarden.com/apis/documentation/api/telekom-tropo-documentation/html/transfer.html
   */
   public function transfer($transfer, Array $params=NULL) {
     if(!is_object($transfer)) {
