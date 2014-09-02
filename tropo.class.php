@@ -434,7 +434,7 @@ class Tropo extends BaseClass {
   *
   * @param Interger $milliseconds
   * @param String or Array $allowSignals
-  * @see 
+  * @see https://www.developergarden.com/apis/documentation/api/telekom-tropo-documentation/html/wait.html
   */
   public function wait($wait) {
      if (!is_object($wait) && is_array($wait)){
